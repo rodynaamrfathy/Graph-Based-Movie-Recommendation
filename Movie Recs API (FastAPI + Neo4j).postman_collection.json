@@ -1,0 +1,764 @@
+{
+	"info": {
+		"_postman_id": "e6a96806-3efc-4724-8050-5274d3e9b2c2",
+		"name": "Movie Recs API (FastAPI + Neo4j)",
+		"description": "Postman collection for all movie recommendation APIs.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46742383",
+		"_collection_link": "https://rodynaamr-9568229.postman.co/workspace/My-Workspace~7514cf41-a650-4b24-8057-7b5072080efd/collection/46742383-e6a96806-3efc-4724-8050-5274d3e9b2c2?action=share&source=collection_link&creator=46742383"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/health",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Health Check",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/health",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 22 Nov 2025 18:31:15 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "15"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"ok\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Movie Details",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "movie_name",
+							"value": "The Kashmir Files",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/movies/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"movies",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Movie Details (POST - by Title)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "movie_name",
+									"value": "The Kashmir Files",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/movies/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"movies",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 22 Nov 2025 18:31:55 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "3704"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"imdb_id\": \"tt8529208\",\n        \"title\": \"#Gadhvi (He thought he was Gandhi)\",\n        \"year\": \"(2019)\",\n        \"runtime\": \"109 min\",\n        \"rating\": 7.3,\n        \"votes\": 9,\n        \"plot\": \"When a retired, widower inadvertently takes on the establishment, the nondescript Ram Nath Gadhvi becomes the social media sensation, #Gadhvi. The story unfolds with a Gandhian (read ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt8529208/\"\n    },\n    {\n        \"imdb_id\": \"tt11007050\",\n        \"title\": \"#Yaaram\",\n        \"year\": \"(2019)\",\n        \"runtime\": \"110 min\",\n        \"rating\": 4.5,\n        \"votes\": 43,\n        \"plot\": \"All set for an arranged marriage, Rohit Bajaj is faced with a rather strange request from his Muslim friend Sahil. As per halala, he convinces Rohit to get hitched to his ex-wife, just for ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt11007050/\"\n    },\n    {\n        \"imdb_id\": \"tt0454435\",\n        \"title\": \"'D'\",\n        \"year\": \"(2005)\",\n        \"runtime\": \"107 min\",\n        \"rating\": 6.8,\n        \"votes\": 1240,\n        \"plot\": \"Deshu, a mechanic from Dubai, comes home to Mumbai, and gets embroiled in a crime by accident. The film shows his meteoric rise from common, law-abiding man to underworld kingpin.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0454435/\"\n    },\n    {\n        \"imdb_id\": \"tt0215890\",\n        \"title\": \"'Ferry'\",\n        \"year\": \"(1954)\",\n        \"runtime\": \"128 min\",\n        \"rating\": 5.9,\n        \"votes\": 34,\n        \"plot\": \"Widower Vikas lives a fairly wealthy lifestyle along with son, Raju, on an island off of Bombay's Gateway of India. Raju has not been told of his mother's demise, and believes that she will...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0215890/\"\n    },\n    {\n        \"imdb_id\": \"tt0362111\",\n        \"title\": \"'Sambandh'\",\n        \"year\": \"(1969)\",\n        \"runtime\": \" \",\n        \"rating\": 7,\n        \"votes\": 26,\n        \"plot\": \"Manav Chatterjee's childhood is spent in a wealthy home where his father, Umakant, is an alcoholic, and his mother a simple housewife, who tries in vain to get his dad to give up on alcohol...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0362111/\"\n    },\n    {\n        \"imdb_id\": \"tt0118525\",\n        \"title\": \"...Aur Pyaar Ho Gaya\",\n        \"year\": \"(1997)\",\n        \"runtime\": \"147 min\",\n        \"rating\": 4.6,\n        \"votes\": 884,\n        \"plot\": \"Grandpa and Grandma Kapoor live a wealthy life-style with their only widower son, Kailashnath and his daughter Ashi who is of marriage-able age. Kailashnath arranges his daughter's marriage...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0118525/\"\n    },\n    {\n        \"imdb_id\": \"tt0473567\",\n        \"title\": \"...Yahaan\",\n        \"year\": \"(2005)\",\n        \"runtime\": \"142 min\",\n        \"rating\": 7.5,\n        \"votes\": 1160,\n        \"plot\": \"In the disputed territory of Kashmir, a young Muslim woman meets and falls in love with a Hindu man. As a result of their love and desire for marriage, they commit the greatest sin according to those wrapped up in the Kashmiri conflict.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0473567/\"\n    },\n    {\n        \"imdb_id\": \"tt7705476\",\n        \"title\": \"10 Nahi 40\",\n        \"year\": \"(2022)\",\n        \"runtime\": \" \",\n        \"rating\": 5.929502416089852,\n        \"votes\": 0,\n        \"plot\": \"An educational entertainer sending a message to the society to understand and care for the elderly.To know their insecurities and fears as they approach the twilight of their lives. The ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt7705476/\"\n    },\n    {\n        \"imdb_id\": \"tt3488056\",\n        \"title\": \"10.0 Earthquake\",\n        \"year\": \"(2014)\",\n        \"runtime\": \"88 min\",\n        \"rating\": 3.4,\n        \"votes\": 2252,\n        \"plot\": \"Los Angeles is about to be hit by a devastating earthquake, and time is running out to save the city from imminent danger.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt3488056/\"\n    },\n    {\n        \"imdb_id\": \"tt0101244\",\n        \"title\": \"100 Days\",\n        \"year\": \"(1991)\",\n        \"runtime\": \"161 min\",\n        \"rating\": 6.4,\n        \"votes\": 1064,\n        \"plot\": \"A young, clairvoyant woman has a vision of a murder and sets out to uncover the truth before the killer finds her.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0101244/\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Get All Movies",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/movies/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"movies",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get All Movies",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/movies/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"movies",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 22 Nov 2025 18:32:03 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "3704"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"imdb_id\": \"tt8529208\",\n        \"title\": \"#Gadhvi (He thought he was Gandhi)\",\n        \"year\": \"(2019)\",\n        \"runtime\": \"109 min\",\n        \"rating\": 7.3,\n        \"votes\": 9,\n        \"plot\": \"When a retired, widower inadvertently takes on the establishment, the nondescript Ram Nath Gadhvi becomes the social media sensation, #Gadhvi. The story unfolds with a Gandhian (read ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt8529208/\"\n    },\n    {\n        \"imdb_id\": \"tt11007050\",\n        \"title\": \"#Yaaram\",\n        \"year\": \"(2019)\",\n        \"runtime\": \"110 min\",\n        \"rating\": 4.5,\n        \"votes\": 43,\n        \"plot\": \"All set for an arranged marriage, Rohit Bajaj is faced with a rather strange request from his Muslim friend Sahil. As per halala, he convinces Rohit to get hitched to his ex-wife, just for ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt11007050/\"\n    },\n    {\n        \"imdb_id\": \"tt0454435\",\n        \"title\": \"'D'\",\n        \"year\": \"(2005)\",\n        \"runtime\": \"107 min\",\n        \"rating\": 6.8,\n        \"votes\": 1240,\n        \"plot\": \"Deshu, a mechanic from Dubai, comes home to Mumbai, and gets embroiled in a crime by accident. The film shows his meteoric rise from common, law-abiding man to underworld kingpin.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0454435/\"\n    },\n    {\n        \"imdb_id\": \"tt0215890\",\n        \"title\": \"'Ferry'\",\n        \"year\": \"(1954)\",\n        \"runtime\": \"128 min\",\n        \"rating\": 5.9,\n        \"votes\": 34,\n        \"plot\": \"Widower Vikas lives a fairly wealthy lifestyle along with son, Raju, on an island off of Bombay's Gateway of India. Raju has not been told of his mother's demise, and believes that she will...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0215890/\"\n    },\n    {\n        \"imdb_id\": \"tt0362111\",\n        \"title\": \"'Sambandh'\",\n        \"year\": \"(1969)\",\n        \"runtime\": \" \",\n        \"rating\": 7,\n        \"votes\": 26,\n        \"plot\": \"Manav Chatterjee's childhood is spent in a wealthy home where his father, Umakant, is an alcoholic, and his mother a simple housewife, who tries in vain to get his dad to give up on alcohol...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0362111/\"\n    },\n    {\n        \"imdb_id\": \"tt0118525\",\n        \"title\": \"...Aur Pyaar Ho Gaya\",\n        \"year\": \"(1997)\",\n        \"runtime\": \"147 min\",\n        \"rating\": 4.6,\n        \"votes\": 884,\n        \"plot\": \"Grandpa and Grandma Kapoor live a wealthy life-style with their only widower son, Kailashnath and his daughter Ashi who is of marriage-able age. Kailashnath arranges his daughter's marriage...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0118525/\"\n    },\n    {\n        \"imdb_id\": \"tt0473567\",\n        \"title\": \"...Yahaan\",\n        \"year\": \"(2005)\",\n        \"runtime\": \"142 min\",\n        \"rating\": 7.5,\n        \"votes\": 1160,\n        \"plot\": \"In the disputed territory of Kashmir, a young Muslim woman meets and falls in love with a Hindu man. As a result of their love and desire for marriage, they commit the greatest sin according to those wrapped up in the Kashmiri conflict.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0473567/\"\n    },\n    {\n        \"imdb_id\": \"tt7705476\",\n        \"title\": \"10 Nahi 40\",\n        \"year\": \"(2022)\",\n        \"runtime\": \" \",\n        \"rating\": 5.929502416089852,\n        \"votes\": 0,\n        \"plot\": \"An educational entertainer sending a message to the society to understand and care for the elderly.To know their insecurities and fears as they approach the twilight of their lives. The ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt7705476/\"\n    },\n    {\n        \"imdb_id\": \"tt3488056\",\n        \"title\": \"10.0 Earthquake\",\n        \"year\": \"(2014)\",\n        \"runtime\": \"88 min\",\n        \"rating\": 3.4,\n        \"votes\": 2252,\n        \"plot\": \"Los Angeles is about to be hit by a devastating earthquake, and time is running out to save the city from imminent danger.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt3488056/\"\n    },\n    {\n        \"imdb_id\": \"tt0101244\",\n        \"title\": \"100 Days\",\n        \"year\": \"(1991)\",\n        \"runtime\": \"161 min\",\n        \"rating\": 6.4,\n        \"votes\": 1064,\n        \"plot\": \"A young, clairvoyant woman has a vision of a murder and sets out to uncover the truth before the killer finds her.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0101244/\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Get Movie by IMDb ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/movies/id/tt10811166",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"movies",
+						"id",
+						"tt10811166"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Movie by IMDb ID",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/movies/id/tt10811166",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"movies",
+								"id",
+								"tt10811166"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 22 Nov 2025 18:32:26 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "586"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imdb_id\": \"tt10811166\",\n    \"title\": \"The Kashmir Files\",\n    \"year\": \"(2022)\",\n    \"runtime\": \"170 min\",\n    \"rating\": 8.3,\n    \"votes\": 548031,\n    \"plot\": \"The Kashmir Files' is a story, based on video interviews of the first generation victims of the Genocide of Kashmiri Pandit Community In 1990.\",\n    \"imdb_url\": \"https://www.imdb.com/title/tt10811166/\",\n    \"actors\": [\n        \"Vivek Agnihotri\",\n        \"Mithun Chakraborty\",\n        \"Anupam Kher\",\n        \"Darshan Kumaar\",\n        \"Pallavi Joshi\"\n    ],\n    \"directors\": [\n        \"Vivek Agnihotri\"\n    ],\n    \"genres\": [\n        \"Drama\"\n    ],\n    \"keywords\": [\n        \"Kashmiri Pandit Community\",\n        \"Kashmir Files'\",\n        \"Genocide of Kashmiri\",\n        \"Kashmiri Pandit\",\n        \"Pandit Community\"\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "View Movie on IMDb",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/movies/imdb/tt10811166",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"movies",
+						"imdb",
+						"tt10811166"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "View Movie on IMDb",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/movies/imdb/tt10811166",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"movies",
+								"imdb",
+								"tt10811166"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 22 Nov 2025 18:32:35 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "76"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"imdb_id\": \"tt10811166\",\n    \"imdb_url\": \"https://www.imdb.com/title/tt10811166/\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Search Movies by Keyword",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/movies/search/?keyword=dream",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"movies",
+						"search",
+						""
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "dream"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Search Movies by Keyword",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/movies/search/?keyword=dream",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"movies",
+								"search",
+								""
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "dream"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 22 Nov 2025 18:32:39 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "11826"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"imdb_id\": \"tt0374887\",\n        \"title\": \"Munna Bhai M.B.B.S.\",\n        \"year\": \"(2003)\",\n        \"runtime\": \"156 min\",\n        \"rating\": 8.1,\n        \"votes\": 80493,\n        \"plot\": \"A gangster sets out to fulfill his father's dream of becoming a doctor.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0374887/\",\n        \"actors\": [\n            \"Rajkumar Hirani\",\n            \"Sanjay Dutt\",\n            \"Boman Irani\",\n            \"Gracy Singh\",\n            \"Arshad Warsi\"\n        ],\n        \"directors\": [\n            \"Rajkumar Hirani\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Comedy\"\n        ],\n        \"keywords\": [\n            \"gangster sets\",\n            \"fulfill his father\",\n            \"father dream\",\n            \"doctor\",\n            \"gangster\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt0118983\",\n        \"title\": \"Dil To Pagal Hai\",\n        \"year\": \"(1997)\",\n        \"runtime\": \"180 min\",\n        \"rating\": 7,\n        \"votes\": 22311,\n        \"plot\": \"A grand musical about three passionate and dreamy characters: Rahul, Pooja and Nisha. Will their dreams come true? Will they find their true love?\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0118983/\",\n        \"actors\": [\n            \"Shah Rukh Khan\",\n            \"Akshay Kumar\",\n            \"Yash Chopra\",\n            \"Karisma Kapoor\",\n            \"Madhuri Dixit\"\n        ],\n        \"directors\": [\n            \"Yash Chopra\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Comedy\",\n            \"Romance\",\n            \"Musical\"\n        ],\n        \"keywords\": [\n            \"Rahul\",\n            \"Pooja and Nisha\",\n            \"dreamy characters\",\n            \"grand musical\",\n            \"passionate and dreamy\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt0110222\",\n        \"title\": \"Kabhi Haan Kabhi Naa\",\n        \"year\": \"(1994)\",\n        \"runtime\": \"158 min\",\n        \"rating\": 7.6,\n        \"votes\": 18265,\n        \"plot\": \"A dreamer falls for a girl who is in love with someone else and tries to create a rift between her and the man she loves.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0110222/\",\n        \"actors\": [\n            \"Shah Rukh Khan\",\n            \"Deepak Tijori\",\n            \"Kundan Shah\",\n            \"Suchitra Krishnamoorthi\",\n            \"Rita Bhaduri\"\n        ],\n        \"directors\": [\n            \"Kundan Shah\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Comedy\",\n            \"Romance\",\n            \"Musical\",\n            \"Music\"\n        ],\n        \"keywords\": [\n            \"dreamer falls\",\n            \"create a rift\",\n            \"man she loves\",\n            \"dreamer\",\n            \"falls\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt8907986\",\n        \"title\": \"Angrezi Medium\",\n        \"year\": \"(2020)\",\n        \"runtime\": \"145 min\",\n        \"rating\": 7.2,\n        \"votes\": 16639,\n        \"plot\": \"When his daughter decides to further her studies in London, a hardworking Rajasthani businessman does everything in power to make her dreams come true.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt8907986/\",\n        \"actors\": [\n            \"Kareena Kapoor\",\n            \"Irrfan Khan\",\n            \"Deepak Dobriyal\",\n            \"Radhika Madan\",\n            \"Homi Adajania\"\n        ],\n        \"directors\": [\n            \"Homi Adajania\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Comedy\"\n        ],\n        \"keywords\": [\n            \"hardworking Rajasthani businessman\",\n            \"studies in London\",\n            \"hardworking Rajasthani\",\n            \"Rajasthani businessman\",\n            \"dreams come true\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt1252596\",\n        \"title\": \"Ajab Prem Ki Ghazab Kahani\",\n        \"year\": \"(2009)\",\n        \"runtime\": \"150 min\",\n        \"rating\": 6.3,\n        \"votes\": 14500,\n        \"plot\": \"The wacky adventures of a young man who is willing to sacrifice his own love to insure the happiness of others, even trying to get the girl of his dreams married to the guy of her dreams.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt1252596/\",\n        \"actors\": [\n            \"Ranbir Kapoor\",\n            \"Katrina Kaif\",\n            \"Rajkumar Santoshi\",\n            \"Darshan Jariwala\",\n            \"Smita Jaykar\"\n        ],\n        \"directors\": [\n            \"Rajkumar Santoshi\"\n        ],\n        \"genres\": [\n            \"Comedy\",\n            \"Action\",\n            \"Romance\",\n            \"Musical\"\n        ],\n        \"keywords\": [\n            \"young man\",\n            \"wacky adventures\",\n            \"love to insure\",\n            \"insure the happiness\",\n            \"dreams married\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt3742284\",\n        \"title\": \"NH10\",\n        \"year\": \"(2015)\",\n        \"runtime\": \"115 min\",\n        \"rating\": 7.1,\n        \"votes\": 13180,\n        \"plot\": \"On their way to a weekend retreat, a married couple find their dream vacation turn into a nightmare when they cross paths with a dangerous gang.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt3742284/\",\n        \"actors\": [\n            \"Darshan Kumaar\",\n            \"Anushka Sharma\",\n            \"Navdeep Singh\",\n            \"Neil Bhoopalam\",\n            \"Deepti Naval\"\n        ],\n        \"directors\": [\n            \"Navdeep Singh\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Action\",\n            \"Crime\",\n            \"Thriller\"\n        ],\n        \"keywords\": [\n            \"married couple find\",\n            \"dream vacation turn\",\n            \"weekend retreat\",\n            \"dangerous gang\",\n            \"married couple\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt0114234\",\n        \"title\": \"Rangeela\",\n        \"year\": \"(1995)\",\n        \"runtime\": \"142 min\",\n        \"rating\": 7.4,\n        \"votes\": 9794,\n        \"plot\": \"A middle class young woman, who dreams of Bollywood fame, is caught in a love triangle between her childhood friend and a famous actor.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0114234/\",\n        \"actors\": [\n            \"Aamir Khan\",\n            \"Jackie Shroff\",\n            \"Ram Gopal Varma\",\n            \"Urmila Matondkar\",\n            \"Gulshan Grover\"\n        ],\n        \"directors\": [\n            \"Ram Gopal Varma\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Comedy\",\n            \"Romance\",\n            \"Musical\"\n        ],\n        \"keywords\": [\n            \"young woman\",\n            \"class young woman\",\n            \"middle class young\",\n            \"Bollywood fame\",\n            \"dreams of Bollywood\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt0173102\",\n        \"title\": \"Raju Ban Gaya Gentleman\",\n        \"year\": \"(1992)\",\n        \"runtime\": \"152 min\",\n        \"rating\": 6.7,\n        \"votes\": 7701,\n        \"plot\": \"Raju comes to Bombay chasing his dreams, but keeps losing out on opportunities. His love, Renu helps him find a job. Success goes to his head until one day a tragic accident destroys his reputation.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0173102/\",\n        \"actors\": [\n            \"Shah Rukh Khan\",\n            \"Amrita Singh\",\n            \"Juhi Chawla\",\n            \"Nana Patekar\",\n            \"Aziz Mirza\"\n        ],\n        \"directors\": [\n            \"Aziz Mirza\"\n        ],\n        \"genres\": [\n            \"Comedy\",\n            \"Romance\",\n            \"Musical\"\n        ],\n        \"keywords\": [\n            \"Bombay chasing\",\n            \"chasing his dreams\",\n            \"Bombay\",\n            \"Raju\",\n            \"dreams\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt2122340\",\n        \"title\": \"Ferrari Ki Sawaari\",\n        \"year\": \"(2012)\",\n        \"runtime\": \"140 min\",\n        \"rating\": 6.4,\n        \"votes\": 5443,\n        \"plot\": \"How the pursuit of an Indian cricket legend's Ferrari makes a young boy's dreams of playing cricket at Lords a reality.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt2122340/\",\n        \"actors\": [\n            \"Sharman Joshi\",\n            \"Boman Irani\",\n            \"Paresh Rawal\",\n            \"Rajesh Mapuskar\",\n            \"Ritvik Sahore\"\n        ],\n        \"directors\": [\n            \"Rajesh Mapuskar\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Comedy\",\n            \"Family\",\n            \"Sport\"\n        ],\n        \"keywords\": [\n            \"legend Ferrari makes\",\n            \"Indian cricket legend\",\n            \"cricket legend Ferrari\",\n            \"young boy dreams\",\n            \"Lords a reality\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt11651780\",\n        \"title\": \"Choked: Paisa Bolta Hai\",\n        \"year\": \"(2020)\",\n        \"runtime\": \"114 min\",\n        \"rating\": 5.7,\n        \"votes\": 5363,\n        \"plot\": \"A bank employee weighed down by her jobless husband's debts - and her own broken dreams - finds a secret source of seemingly unlimited cash in her home.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt11651780/\",\n        \"actors\": [\n            \"Anurag Kashyap\",\n            \"Amruta Subhash\",\n            \"Saiyami Kher\",\n            \"Roshan Mathew\",\n            \"Upendra Limaye\"\n        ],\n        \"directors\": [\n            \"Anurag Kashyap\"\n        ],\n        \"genres\": [\n            \"Drama\"\n        ],\n        \"keywords\": [\n            \"jobless husband debts\",\n            \"bank employee weighed\",\n            \"seemingly unlimited cash\",\n            \"husband debts\",\n            \"broken dreams\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt0250415\",\n        \"title\": \"Har Dil Jo Pyar Karega...\",\n        \"year\": \"(2000)\",\n        \"runtime\": \"173 min\",\n        \"rating\": 5.1,\n        \"votes\": 4424,\n        \"plot\": \"Raj is a struggling singer with big dreams who is still waiting for his big break. One night he witnesses an accident where a car spins out of control and lands on the tracks of an ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0250415/\",\n        \"actors\": [\n            \"Salman Khan\",\n            \"Preity Zinta\",\n            \"Rani Mukerji\",\n            \"Rajeev Verma\",\n            \"Raj Kanwar\"\n        ],\n        \"directors\": [\n            \"Raj Kanwar\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Comedy\",\n            \"Romance\",\n            \"Musical\"\n        ],\n        \"keywords\": [\n            \"Raj\",\n            \"big break\",\n            \"struggling singer\",\n            \"big dreams\",\n            \"big\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt5764024\",\n        \"title\": \"OK Jaanu\",\n        \"year\": \"(2017)\",\n        \"runtime\": \"135 min\",\n        \"rating\": 5.1,\n        \"votes\": 4223,\n        \"plot\": \"Adi and Tara move to Mumbai to pursue their dreams. A chance meeting sparks off a heady, no strings attached romance until their careers pull them apart. Will ambition prevail over matters of the heart?\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt5764024/\",\n        \"actors\": [\n            \"Aditya Roy Kapoor\",\n            \"Shraddha Kapoor\",\n            \"Naseeruddin Shah\",\n            \"Shaad Ali\",\n            \"Kitu Gidwani\"\n        ],\n        \"directors\": [\n            \"Shaad Ali\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Romance\"\n        ],\n        \"keywords\": [\n            \"Adi and Tara\",\n            \"Tara move\",\n            \"move to Mumbai\",\n            \"Mumbai to pursue\",\n            \"pursue their dreams\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt0267548\",\n        \"title\": \"Haseena Maan Jaayegi\",\n        \"year\": \"(1999)\",\n        \"runtime\": \"147 min\",\n        \"rating\": 6.3,\n        \"votes\": 3291,\n        \"plot\": \"Separated from their wealthy father and each other, two brothers (Sanjay Dutt, Govinda) try to win the hearts of their dream girls.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0267548/\",\n        \"actors\": [\n            \"Sanjay Dutt\",\n            \"David Dhawan\",\n            \"Karisma Kapoor\",\n            \"Govinda\",\n            \"Pooja Batra\"\n        ],\n        \"directors\": [\n            \"David Dhawan\"\n        ],\n        \"genres\": [\n            \"Comedy\",\n            \"Action\",\n            \"Romance\"\n        ],\n        \"keywords\": [\n            \"Sanjay Dutt\",\n            \"dream girls\",\n            \"wealthy father\",\n            \"win the hearts\",\n            \"Govinda\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt2255934\",\n        \"title\": \"Aiyyaa\",\n        \"year\": \"(2012)\",\n        \"runtime\": \"152 min\",\n        \"rating\": 4.3,\n        \"votes\": 1878,\n        \"plot\": \"A woman goes on the hunt for her dream man, armed with her wild imagination, her passion for Masala-films, and her ultra-sensitive sense of smell.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt2255934/\",\n        \"actors\": [\n            \"Rani Mukerji\",\n            \"Prithviraj Sukumaran\",\n            \"Sachin Kundalkar\",\n            \"Nirmiti Sawant\",\n            \"Subodh Bhave\"\n        ],\n        \"directors\": [\n            \"Sachin Kundalkar\"\n        ],\n        \"genres\": [\n            \"Comedy\",\n            \"Romance\"\n        ],\n        \"keywords\": [\n            \"passion for Masala-films\",\n            \"dream man\",\n            \"wild imagination\",\n            \"sense of smell\",\n            \"ultra-sensitive sense\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt3501994\",\n        \"title\": \"Hawaa Hawaai\",\n        \"year\": \"(2014)\",\n        \"runtime\": \"120 min\",\n        \"rating\": 7.3,\n        \"votes\": 1772,\n        \"plot\": \"Arjun dreams of skating. Can Arjun follow his dream and be a champion?\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt3501994/\",\n        \"actors\": [\n            \"Amole Gupte\",\n            \"Partho A. Gupte\",\n            \"Makrand Deshpande\",\n            \"Devraya Gole\",\n            \"Neha Joshi\"\n        ],\n        \"directors\": [\n            \"Amole Gupte\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Family\",\n            \"Sport\"\n        ],\n        \"keywords\": [\n            \"Arjun\",\n            \"skating\",\n            \"dreams of skating\",\n            \"Arjun dreams\",\n            \"Arjun follow\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt1107308\",\n        \"title\": \"Aur Pappu Pass Ho Gaya\",\n        \"year\": \"(2007)\",\n        \"runtime\": \"142 min\",\n        \"rating\": 4.1,\n        \"votes\": 1728,\n        \"plot\": \"Day-dreamer Pappu lives a poor lifestyle with his mom and dad in a village in India. In order to better his prospects, he re-locates to Bombay and finds a job as a mechanic in Sardar Tara ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt1107308/\",\n        \"actors\": [\n            \"Jackie Shroff\",\n            \"Kashmira Shah\",\n            \"Krishna Abhishek\",\n            \"S. Soni\",\n            \"Narendra Bedi\"\n        ],\n        \"directors\": [\n            \"S. Soni\"\n        ],\n        \"genres\": [\n            \"Comedy\"\n        ],\n        \"keywords\": [\n            \"village in India\",\n            \"Day-dreamer Pappu lives\",\n            \"Day-dreamer Pappu\",\n            \"Pappu lives\",\n            \"lives a poor\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt9766310\",\n        \"title\": \"Kanpuriye\",\n        \"year\": \"(2019)\",\n        \"runtime\": \"103 min\",\n        \"rating\": 6.1,\n        \"votes\": 1521,\n        \"plot\": \"The story revolves around the story of three boys from the small town of Kanpur, who have big dreams, and even bigger challenges.\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt9766310/\",\n        \"actors\": [\n            \"Vijay Raaz\",\n            \"Divyendu Sharma\",\n            \"Aparshakti Khurana\",\n            \"Rajshri Deshpande\",\n            \"Ashish Aryan\"\n        ],\n        \"directors\": [\n            \"Ashish Aryan\"\n        ],\n        \"genres\": [\n            \"Drama\"\n        ],\n        \"keywords\": [\n            \"small town\",\n            \"story revolves\",\n            \"big dreams\",\n            \"town of Kanpur\",\n            \"bigger challenges\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt1941638\",\n        \"title\": \"Sadda Adda\",\n        \"year\": \"(2012)\",\n        \"runtime\": \"115 min\",\n        \"rating\": 7.1,\n        \"votes\": 1401,\n        \"plot\": \"'The only thing that will stop you from fulfilling your dreams is you\\\" People have dreams, but not all of us have the guts to put faith in ourselves. Most of us lose focus and give up. We ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt1941638/\",\n        \"actors\": [\n            \"Muazzam Beg\",\n            \"Karan Sharma\",\n            \"Karanvir Sharma\",\n            \"Shaurya Chauhan\",\n            \"Bhaumik Sampat\"\n        ],\n        \"directors\": [\n            \"Muazzam Beg\"\n        ],\n        \"genres\": [\n            \"Drama\",\n            \"Comedy\",\n            \"Romance\"\n        ],\n        \"keywords\": [\n            \"dreams\",\n            \"People have dreams\",\n            \"People\",\n            \"guts to put\",\n            \"put faith\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt0068305\",\n        \"title\": \"Bombay to Goa\",\n        \"year\": \"(1972)\",\n        \"runtime\": \"132 min\",\n        \"rating\": 6.8,\n        \"votes\": 1171,\n        \"plot\": \"College student Mala has dreams of becoming a Bollywood movie actress; her dreams began materializing into reality when she is approached by Mr. Sharma and his assistant Mr. Verma who ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt0068305/\",\n        \"actors\": [\n            \"Amitabh Bachchan\",\n            \"Aruna Irani\",\n            \"Mehmood\",\n            \"Shatrughan Sinha\",\n            \"S. Ramanathan\"\n        ],\n        \"directors\": [\n            \"Mehmood\"\n        ],\n        \"genres\": [\n            \"Comedy\",\n            \"Action\",\n            \"Adventure\",\n            \"Crime\"\n        ],\n        \"keywords\": [\n            \"College student Mala\",\n            \"Bollywood movie actress\",\n            \"dreams began materializing\",\n            \"student Mala\",\n            \"Bollywood movie\"\n        ]\n    },\n    {\n        \"imdb_id\": \"tt2187972\",\n        \"title\": \"Shirin Farhad Ki Toh Nikal Padi\",\n        \"year\": \"(2012)\",\n        \"runtime\": \"111 min\",\n        \"rating\": 4.6,\n        \"votes\": 1057,\n        \"plot\": \"Farhad Pastakia (Boman Irani) has a dream job as a bra-and-panty salesman. Except that he is a 45-year old Parsi bachelor still living with his overbearing mother and grandmother. But it's ...                See full summary »\",\n        \"imdb_url\": \"https://www.imdb.com/title/tt2187972/\",\n        \"actors\": [\n            \"Kavin Dave\",\n            \"Bela Segal\",\n            \"Freny Bhagat\",\n            \"Dinyar Contractor\",\n            \"Nauheed Cyrusi\"\n        ],\n        \"directors\": [\n            \"Bela Segal\"\n        ],\n        \"genres\": [\n            \"Romance\"\n        ],\n        \"keywords\": [\n            \"Boman Irani\",\n            \"Farhad Pastakia\",\n            \"dream job\",\n            \"Pastakia\",\n            \"Boman\"\n        ]\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Recommend Movies by Actor",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "movie_name",
+							"value": "3 Idiots",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/MoviesRecommendByActor",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"MoviesRecommendByActor"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Recommend Movies by Actor (POST)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "movie_name",
+									"value": "3 Idiots",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/MoviesRecommendByActor",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"MoviesRecommendByActor"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 22 Nov 2025 18:33:19 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "1543"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"movie\": \"3 Idiots\",\n    \"recommendations\": [\n        {\n            \"title\": \"Rang De Basanti\",\n            \"rating\": 8.1,\n            \"year\": \"(2006)\",\n            \"shared_actors\": 2\n        },\n        {\n            \"title\": \"PK\",\n            \"rating\": 8.1,\n            \"year\": \"(2014)\",\n            \"shared_actors\": 2\n        },\n        {\n            \"title\": \"Rocketry: The Nambi Effect\",\n            \"rating\": 9.6,\n            \"year\": \"(2022)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Taare Zameen Par\",\n            \"rating\": 8.3,\n            \"year\": \"(2007)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Dangal\",\n            \"rating\": 8.3,\n            \"year\": \"(2016)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Jo Jeeta Wohi Sikandar\",\n            \"rating\": 8.2,\n            \"year\": \"(1992)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Dil Chahta Hai\",\n            \"rating\": 8.1,\n            \"year\": \"(2001)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Munna Bhai M.B.B.S.\",\n            \"rating\": 8.1,\n            \"year\": \"(2003)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Sarfarosh\",\n            \"rating\": 8.1,\n            \"year\": \"(1999)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Lagaan: Once Upon a Time in India\",\n            \"rating\": 8.1,\n            \"year\": \"(2001)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Andaz Apna Apna\",\n            \"rating\": 8,\n            \"year\": \"(1994)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Lage Raho Munna Bhai\",\n            \"rating\": 8,\n            \"year\": \"(2006)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Secret Superstar\",\n            \"rating\": 7.8,\n            \"year\": \"(2017)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Mumbai Meri Jaan\",\n            \"rating\": 7.7,\n            \"year\": \"(2008)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Guru\",\n            \"rating\": 7.7,\n            \"year\": \"(2007)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Tanu Weds Manu Returns\",\n            \"rating\": 7.6,\n            \"year\": \"(2015)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Sanju\",\n            \"rating\": 7.6,\n            \"year\": \"(2018)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Earth\",\n            \"rating\": 7.6,\n            \"year\": \"(1998)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Saala Khadoos\",\n            \"rating\": 7.6,\n            \"year\": \"(2016)\",\n            \"shared_actors\": 1\n        },\n        {\n            \"title\": \"Rehnaa Hai Terre Dil Mein\",\n            \"rating\": 7.5,\n            \"year\": \"(2001)\",\n            \"shared_actors\": 1\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Recommend Movies by Genre",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "movie_name",
+							"value": "3 Idiots",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/MoviesRecommendByGenre",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"MoviesRecommendByGenre"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Recommend Movies by Genre (POST)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "movie_name",
+									"value": "3 Idiots",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/MoviesRecommendByGenre",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"MoviesRecommendByGenre"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 22 Nov 2025 18:33:30 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "1539"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"movie\": \"3 Idiots\",\n    \"recommendations\": [\n        {\n            \"title\": \"Fazeeta\",\n            \"rating\": 9.7,\n            \"year\": \"(2019)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Damru-story behind a small change\",\n            \"rating\": 9.6,\n            \"year\": \"(2020)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Dwimukha\",\n            \"rating\": 9.1,\n            \"year\": \"(2022)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"A Method in Multishade\",\n            \"rating\": 9,\n            \"year\": \"(2021)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"12 Bulbule\",\n            \"rating\": 8.9,\n            \"year\": \"(2021)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Love Sorries\",\n            \"rating\": 8.8,\n            \"year\": \"(2021)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Mere Desh Ki Dharti\",\n            \"rating\": 8.8,\n            \"year\": \"(2022)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Do Ankhen Barah Haath\",\n            \"rating\": 8.4,\n            \"year\": \"(1957)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Chupke Chupke\",\n            \"rating\": 8.3,\n            \"year\": \"(1975)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Jaane Bhi Do Yaaro\",\n            \"rating\": 8.3,\n            \"year\": \"(1983)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Khosla Ka Ghosla!\",\n            \"rating\": 8.3,\n            \"year\": \"(2006)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Jhol\",\n            \"rating\": 8.3,\n            \"year\": \"(2019)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Chhichhore\",\n            \"rating\": 8.2,\n            \"year\": \"(2019)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Gangs of Wasseypur\",\n            \"rating\": 8.2,\n            \"year\": \"(2012)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Jo Jeeta Wohi Sikandar\",\n            \"rating\": 8.2,\n            \"year\": \"(1992)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Munna Bhai M.B.B.S.\",\n            \"rating\": 8.1,\n            \"year\": \"(2003)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Barfi!\",\n            \"rating\": 8.1,\n            \"year\": \"(2012)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Bajrangi Bhaijaan\",\n            \"rating\": 8.1,\n            \"year\": \"(2015)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Rang De Basanti\",\n            \"rating\": 8.1,\n            \"year\": \"(2006)\",\n            \"shared_genres\": 2\n        },\n        {\n            \"title\": \"Bawarchi\",\n            \"rating\": 8.1,\n            \"year\": \"(1972)\",\n            \"shared_genres\": 2\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Content-Based Recommendation",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/recommend/content-based?movie_title=Inception&top_n=5",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"recommend",
+						"content-based"
+					],
+					"query": [
+						{
+							"key": "movie_title",
+							"value": "Inception"
+						},
+						{
+							"key": "top_n",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Content-Based Recommendation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/recommend/content-based?movie_title=3 Idiots&top_n=5",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"recommend",
+								"content-based"
+							],
+							"query": [
+								{
+									"key": "movie_title",
+									"value": "3 Idiots"
+								},
+								{
+									"key": "top_n",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 22 Nov 2025 19:00:41 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "359"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"movie\": \"3 Idiots\",\n    \"recommendations\": [\n        {\n            \"title\": \"Munna Bhai M.B.B.S.\",\n            \"overall_similarity\": 0.32222222222222224\n        },\n        {\n            \"title\": \"PK\",\n            \"overall_similarity\": 0.2833333333333333\n        },\n        {\n            \"title\": \"Sanju\",\n            \"overall_similarity\": 0.25555555555555554\n        },\n        {\n            \"title\": \"Lage Raho Munna Bhai\",\n            \"overall_similarity\": 0.25555555555555554\n        },\n        {\n            \"title\": \"Holi\",\n            \"overall_similarity\": 0.24112847923899314\n        }\n    ]\n}"
+				}
+			]
+		}
+	]
+}

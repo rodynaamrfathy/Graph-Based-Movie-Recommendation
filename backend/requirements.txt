@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+neo4j
+passlib[bcrypt]
+pyjwt
+pydantic
+httpx
+python-multipart
+typing_extensions
