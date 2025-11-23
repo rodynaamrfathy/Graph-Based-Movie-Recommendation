@@ -1,0 +1,138 @@
+.recommendation-section {
+  margin: 3rem 0;
+  padding: 0 2rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.recommendation-header {
+  margin-bottom: 1.5rem;
+}
+
+.recommendation-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.recommendation-subtitle {
+  font-size: 1rem;
+  color: #b0b0b0;
+  margin: 0;
+}
+
+.recommendation-container {
+  position: relative;
+}
+
+/* Flowbite Carousel Custom Styling */
+.recommendation-container .custom-carousel {
+  position: relative;
+}
+
+.carousel-slide-content {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  padding: 0.5rem 0;
+  align-items: center;
+  min-height: 400px;
+  padding-left: 0;
+}
+
+/* Custom carousel control buttons */
+.carousel-control-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(93, 173, 226, 0.3);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-control-btn:hover {
+  background-color: rgba(93, 173, 226, 0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-control-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(93, 173, 226, 0.3);
+}
+
+.carousel-control-left {
+  left: -20px;
+}
+
+.carousel-control-right {
+  right: -20px;
+}
+
+.carousel-control-icon {
+  width: 16px;
+  height: 16px;
+  color: #ffffff;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Override Flowbite default carousel styles */
+.recommendation-container .carousel-root {
+  position: relative;
+}
+
+.recommendation-container .carousel-root .carousel-item {
+  display: flex;
+  align-items: center;
+}
+
+/* Hide any default Flowbite controls that might appear */
+.recommendation-container button[data-carousel-prev]:not(.carousel-control-btn),
+.recommendation-container button[data-carousel-next]:not(.carousel-control-btn) {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .recommendation-section {
+    padding: 0 1rem;
+    margin: 2rem 0;
+  }
+
+  .carousel-control-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .carousel-control-left {
+    left: -15px;
+  }
+
+  .carousel-control-right {
+    right: -15px;
+  }
+
+  .recommendation-title {
+    font-size: 1.25rem;
+  }
+}
