@@ -1,0 +1,157 @@
+.searched-movie-card {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.searched-movie-content {
+  background-color: #2d1b4e;
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  gap: 2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.searched-movie-poster {
+  min-width: 200px;
+  width: 200px;
+  aspect-ratio: 2/3;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #1a0d2e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.searched-movie-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.searched-movie-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.searched-movie-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.searched-movie-year {
+  font-weight: 400;
+  color: #b0b0b0;
+}
+
+.searched-movie-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.star {
+  font-size: 1.2rem;
+}
+
+.searched-movie-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.genre-tag {
+  padding: 0.4rem 0.8rem;
+  background-color: #3d2b5e;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #ffffff;
+}
+
+.searched-movie-overview {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #e0e0e0;
+  margin: 0.5rem 0;
+}
+
+.searched-movie-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.view-details-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #5dade2;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-details-button:hover {
+  background-color: #4da8d8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(93, 173, 226, 0.3);
+}
+
+.imdb-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #5dade2;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.imdb-link:hover {
+  color: #4da8d8;
+}
+
+.external-icon {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .searched-movie-card {
+    padding: 0 1rem;
+    margin: 1.5rem auto;
+  }
+
+  .searched-movie-content {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .searched-movie-poster {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  .searched-movie-title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .searched-movie-actions {
+    flex-direction: column;
+  }
+
+  .view-details-button {
+    width: 100%;
+  }
+}
+

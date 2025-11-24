@@ -1,0 +1,68 @@
+.help-icon-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+}
+
+.help-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #4caf50;
+  color: #ffffff;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.help-icon:hover {
+  background-color: #45a049;
+  transform: scale(1.1);
+}
+
+.help-tooltip {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  background-color: #2d1b4e;
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  min-width: 200px;
+  max-width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid #3d2b5e;
+}
+
+.help-tooltip p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .help-icon-container {
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .help-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.25rem;
+  }
+
+  .help-tooltip {
+    min-width: 180px;
+    max-width: 200px;
+    font-size: 0.85rem;
+  }
+}
+
