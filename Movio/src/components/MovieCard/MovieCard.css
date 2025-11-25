@@ -4,6 +4,9 @@
   cursor: pointer;
   transition: transform 0.3s ease;
   margin-right: 1rem;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .movie-card:hover {

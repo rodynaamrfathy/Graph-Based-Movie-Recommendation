@@ -4,8 +4,7 @@ import SearchBar from '../../components/SearchBar/SearchBar.jsx';
 import SearchedMovie from '../../components/SearchedMovie/SearchedMovie.jsx';
 import RecommendationSection from '../../components/RecommendationSection/RecommendationSection.jsx';
 import HelpIcon from '../../components/HelpIcon/HelpIcon.jsx';
-import { searchMovie } from '../../services/movieService';
-import { mockMovies } from '../../services/mockData';
+import { fetchPopularMovies, searchMovie } from '../../services/movieService';
 import './SearchPage.css';
 
 const SearchPage = () => {
@@ -13,12 +12,30 @@ const SearchPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [popularMovies, setPopularMovies] = useState([]);
+  const [popularError, setPopularError] = useState(null);
 
-  // Load popular movies on component mount
   useEffect(() => {
-    // Get all mock movies as popular movies
-    const movies = Object.values(mockMovies);
-    setPopularMovies(movies);
+    let isMounted = true;
+
+    const loadPopularMovies = async () => {
+      try {
+        const movies = await fetchPopularMovies();
+        if (isMounted) {
+          setPopularMovies(movies);
+          setPopularError(null);
+        }
+      } catch (err) {
+        console.error('Failed to load popular movies', err);
+        if (isMounted) {
+          setPopularError('Unable to load popular movies right now.');
+        }
+      }
+    };
+
+    loadPopularMovies();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleSearch = async (query) => {
@@ -57,12 +74,19 @@ const SearchPage = () => {
           </div>
         )}
 
-        {!searchedMovie && !isLoading && !error && popularMovies.length > 0 && (
-          <RecommendationSection
-            title="Popular Movies"
-            subtitle="Discover trending movies"
-            movies={popularMovies}
-          />
+        {!searchedMovie && !isLoading && (
+          <>
+            {popularError && (
+              <div className="error-message">{popularError}</div>
+            )}
+            {popularMovies.length > 0 && (
+              <RecommendationSection
+                title="Popular Movies"
+                subtitle="Discover trending movies"
+                movies={popularMovies}
+              />
+            )}
+          </>
         )}
 
         {searchedMovie && (

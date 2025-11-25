@@ -16,31 +16,47 @@ const MovieDetailsPage = () => {
   const [contentRecommendations, setContentRecommendations] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchMovieDetails = async () => {
       setIsLoading(true);
       setError(null);
       try {
         const movieData = await getMovieDetails(id);
+        if (!isMounted) return;
+
         setMovie(movieData);
-        
-        // Get recommendations after movie is loaded
-        if (movieData && movieData.id) {
-          const recommendations = await getRecommendations(movieData.id);
-          setActorRecommendations(recommendations.byActors || []);
-          setGenreRecommendations(recommendations.byGenre || []);
-          setContentRecommendations(recommendations.byContent || []);
+
+        if (movieData?.imdbId || movieData?.id || movieData?.title) {
+          const recs = await getRecommendations(
+            movieData.imdbId || movieData.id,
+            movieData.title,
+          );
+          if (isMounted) {
+            setActorRecommendations(recs.byActors || []);
+            setGenreRecommendations(recs.byGenre || []);
+            setContentRecommendations(recs.byContent || []);
+          }
         }
       } catch (err) {
-        setError(err.message || 'Failed to load movie details. Please try again.');
+        if (isMounted) {
+          setError(err.message || 'Failed to load movie details. Please try again.');
+        }
         console.error('Movie details error:', err);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     if (id) {
       fetchMovieDetails();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const handleBackToSearch = () => {
@@ -48,7 +64,7 @@ const MovieDetailsPage = () => {
   };
 
   const handleViewIMDb = () => {
-    if (movie && movie.imdbUrl) {
+    if (movie?.imdbUrl) {
       window.open(movie.imdbUrl, '_blank');
     }
   };
@@ -90,6 +106,12 @@ const MovieDetailsPage = () => {
     );
   }
 
+  const directors = movie.directors && movie.directors.length > 0 ? movie.directors : [];
+  const votesLabel =
+    typeof movie.votes === 'number'
+      ? movie.votes.toLocaleString()
+      : movie.votes || null;
+
   return (
     <div className="movie-details-page">
       <div className="movie-details-container">
@@ -113,10 +135,10 @@ const MovieDetailsPage = () => {
             </h1>
 
             <div className="movie-details-meta">
-              {movie.duration && (
+              {movie.runtime && (
                 <div className="meta-item">
                   <span className="meta-icon">🕐</span>
-                  <span>{movie.duration} min</span>
+                  <span>{movie.runtime} min</span>
                 </div>
               )}
               {movie.rating && (
@@ -125,10 +147,10 @@ const MovieDetailsPage = () => {
                   <span>{movie.rating}/10</span>
                 </div>
               )}
-              {movie.votes && (
+              {votesLabel && (
                 <div className="meta-item">
                   <span className="meta-icon">👤</span>
-                  <span>{movie.votes}</span>
+                  <span>{votesLabel}</span>
                 </div>
               )}
             </div>
@@ -140,11 +162,15 @@ const MovieDetailsPage = () => {
               </div>
             )}
 
-            {movie.director && (
+            {directors.length > 0 && (
               <div className="movie-details-section">
                 <h2 className="section-title">Director</h2>
                 <div className="tag-list">
-                  <span className="tag">{movie.director}</span>
+                  {directors.map((director) => (
+                    <span key={director} className="tag">
+                      {director}
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
@@ -153,8 +179,8 @@ const MovieDetailsPage = () => {
               <div className="movie-details-section">
                 <h2 className="section-title">Genres</h2>
                 <div className="tag-list">
-                  {movie.genres.map((genre, index) => (
-                    <span key={index} className="tag">
+                  {movie.genres.map((genre) => (
+                    <span key={genre} className="tag">
                       {genre}
                     </span>
                   ))}
@@ -166,8 +192,8 @@ const MovieDetailsPage = () => {
               <div className="movie-details-section">
                 <h2 className="section-title">Cast</h2>
                 <div className="tag-list">
-                  {movie.cast.map((actor, index) => (
-                    <span key={index} className="tag">
+                  {movie.cast.map((actor) => (
+                    <span key={actor} className="tag">
                       {actor}
                     </span>
                   ))}
@@ -179,8 +205,8 @@ const MovieDetailsPage = () => {
               <div className="movie-details-section">
                 <h2 className="section-title">Keywords</h2>
                 <div className="tag-list">
-                  {movie.keywords.map((keyword, index) => (
-                    <span key={index} className="tag">
+                  {movie.keywords.map((keyword) => (
+                    <span key={keyword} className="tag">
                       {keyword}
                     </span>
                   ))}
@@ -196,7 +222,6 @@ const MovieDetailsPage = () => {
           </div>
         </div>
         
-        {/* Recommendations Section */}
         <div className="movie-recommendations-section">
           {contentRecommendations.length > 0 && (
             <RecommendationSection

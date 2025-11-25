@@ -6,8 +6,16 @@ import './SearchedMovie.css';
 const SearchedMovie = ({ movie }) => {
   const navigate = useNavigate();
 
+  if (!movie) {
+    return null;
+  }
+
+  const movieIdentifier = movie.imdbId || movie.id;
+
   const handleViewDetails = () => {
-    navigate(`/movie/${movie.id}`);
+    if (movieIdentifier) {
+      navigate(`/movie/${movieIdentifier}`);
+    }
   };
 
   const handleViewIMDb = () => {
@@ -15,8 +23,6 @@ const SearchedMovie = ({ movie }) => {
       window.open(movie.imdbUrl, '_blank');
     }
   };
-
-  if (!movie) return null;
 
   return (
     <div className="searched-movie-card">
@@ -33,26 +39,42 @@ const SearchedMovie = ({ movie }) => {
             {movie.title}
             {movie.year && <span className="searched-movie-year"> ({movie.year})</span>}
           </h2>
-          {movie.rating && (
-            <div className="searched-movie-rating">
-              <span className="star">⭐</span>
-              <span>{movie.rating}</span>
-            </div>
-          )}
+
+          <div className="searched-movie-meta">
+            {movie.rating && (
+              <div className="searched-movie-rating">
+                <span className="star">⭐</span>
+                <span>{movie.rating}</span>
+              </div>
+            )}
+            {movie.runtime && (
+              <div className="runtime">
+                <span>🕐</span>
+                <span>{movie.runtime} min</span>
+              </div>
+            )}
+          </div>
+
           {movie.genres && movie.genres.length > 0 && (
             <div className="searched-movie-genres">
               {movie.genres.map((genre, index) => (
-                <span key={index} className="genre-tag">
+                <span key={genre || index} className="genre-tag">
                   {genre}
                 </span>
               ))}
             </div>
           )}
+
           {movie.overview && (
             <p className="searched-movie-overview">{movie.overview}</p>
           )}
+
           <div className="searched-movie-actions">
-            <button className="view-details-button" onClick={handleViewDetails}>
+            <button
+              className="view-details-button"
+              onClick={handleViewDetails}
+              disabled={!movieIdentifier}
+            >
               View Full Details
             </button>
             {movie.imdbUrl && (
@@ -78,4 +100,3 @@ const SearchedMovie = ({ movie }) => {
 };
 
 export default SearchedMovie;
-

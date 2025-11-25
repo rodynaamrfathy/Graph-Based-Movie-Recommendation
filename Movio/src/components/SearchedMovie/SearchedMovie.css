@@ -56,6 +56,20 @@
   color: #ffffff;
 }
 
+.searched-movie-meta {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  color: #e0e0e0;
+  font-size: 1rem;
+}
+
+.searched-movie-meta .runtime {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .star {
   font-size: 1.2rem;
 }
