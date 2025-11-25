@@ -6,16 +6,24 @@ import './MovieCard.css';
 const MovieCard = ({ movie, onClick }) => {
   const navigate = useNavigate();
 
+  if (!movie) {
+    return null;
+  }
+
+  const movieIdentifier = movie.imdbId || movie.id;
+
   const handleClick = () => {
     if (onClick) {
       onClick(movie);
-    } else {
-      navigate(`/movie/${movie.id}`);
+      return;
+    }
+    if (movieIdentifier) {
+      navigate(`/movie/${movieIdentifier}`);
     }
   };
 
   return (
-    <div className="movie-card" onClick={handleClick}>
+    <div className="movie-card" onClick={handleClick} role="button" tabIndex={0}>
       <div className="movie-poster-container">
         <img
           src={movie.poster || getPlaceholderPoster()}
@@ -39,4 +47,5 @@ const MovieCard = ({ movie, onClick }) => {
 };
 
 export default MovieCard;
+
 

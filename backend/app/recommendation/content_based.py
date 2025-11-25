@@ -136,7 +136,7 @@ def get_content_recommendations(movie_title: str, driver, top_n: int = 5):
         movies_df[movies_df.index != idx]
         .sort_values(by="overall_similarity", ascending=False)
         .head(top_n)
-        [["title", "overall_similarity"]]
+        [["imdb_id", "title", "overall_similarity"]]
     )
 
     return recommendations.to_dict(orient="records")

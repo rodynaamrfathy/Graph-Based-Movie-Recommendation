@@ -174,12 +174,13 @@ def search_movies_by_keyword(keyword: str = Query(..., description="Keyword to s
 
 # recommend by actor
 @app.get("/MoviesRecommendByActor", summary="Movie Recommendation based on Actors", response_description="Movie Recommendations")
-def movie_recommend_by_actor(movie_name: str = Form(...)):
+def movie_recommend_by_actor(movie_name: str = Query(..., description="Movie title to base actor recommendations on")):
     query = """
     MATCH (m:Movie {title: $movie_title})<-[:ACTED_IN]-(a:Actor)-[:ACTED_IN]->(rec:Movie)
     WHERE m <> rec
     WITH rec, COUNT(a) AS shared_actors
     RETURN rec.title AS RecommendedMovie,
+           rec.imdb_id AS imdb_id,
            rec.rating AS Rating,
            rec.year AS Year,
            shared_actors
@@ -192,6 +193,7 @@ def movie_recommend_by_actor(movie_name: str = Form(...)):
         for record in result:
             recommendations.append({
                 "title": record["RecommendedMovie"],
+                "imdb_id": record["imdb_id"],
                 "rating": record["Rating"],
                 "year": record["Year"],
                 "shared_actors": record["shared_actors"]
@@ -204,12 +206,13 @@ def movie_recommend_by_actor(movie_name: str = Form(...)):
 
 # recommend by genre
 @app.get("/MoviesRecommendByGenre", summary="Movie Recommendation based on Genre", response_description="Movie Recommendations")
-def movie_recommend_by_genre(movie_name: str = Form(...)):
+def movie_recommend_by_genre(movie_name: str = Query(..., description="Movie title to base genre recommendations on")):
     query = """
     MATCH (m:Movie {title: $movie_title})-[:BELONGS_TO_MOVIE]->(g:Genre)<-[:BELONGS_TO_MOVIE]-(rec:Movie)
     WHERE m <> rec
     WITH rec, COUNT(g) AS shared_genres
     RETURN rec.title AS RecommendedMovie,
+           rec.imdb_id AS imdb_id,
            rec.rating AS Rating,
            rec.year AS Year,
            shared_genres
@@ -222,6 +225,7 @@ def movie_recommend_by_genre(movie_name: str = Form(...)):
         for record in result:
             recommendations.append({
                 "title": record["RecommendedMovie"],
+                "imdb_id": record["imdb_id"],
                 "rating": record["Rating"],
                 "year": record["Year"],
                 "shared_genres": record["shared_genres"]

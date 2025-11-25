@@ -34,10 +34,13 @@
 
 .carousel-slide-content {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 1rem;
   justify-content: flex-start;
   padding: 0.5rem 0;
-  align-items: center;
+  align-items: stretch;
+  overflow: hidden;
   min-height: 400px;
   padding-left: 0;
 }

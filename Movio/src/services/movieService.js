@@ -1,226 +1,349 @@
-// Import mock data
+// Import mock data for fallbacks
 import {
+  mockMovies,
   searchMockMovie,
   getMockMovieById,
   getMockRecommendations,
 } from './mockData';
 
-// API Base URL - Update this to match your backend URL
-// In Vite, use import.meta.env.VITE_* for environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
-
-// Use mock data for testing (set to true to use mock data, false to use real API)
-// The app will automatically fallback to mock data if API fails
-const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA === 'true' || false;
-
-/**
- * Handle fetch errors with better error messages
- */
-const handleFetchError = (error, defaultMessage) => {
-  if (error.name === 'TypeError' && error.message.includes('fetch')) {
-    return new Error('Unable to connect to the server. Please check if the backend is running.');
-  }
-  if (error.message && error.message.includes('JSON')) {
-    return new Error('Server returned an invalid response. Please check if the backend API is running and the URL is correct.');
-  }
-  if (error.message) {
-    return error;
-  }
-  return new Error(defaultMessage || 'An unexpected error occurred');
+const readEnv = (viteKey, craKey) => {
+  const viteValue =
+    typeof import.meta !== 'undefined' && import.meta.env
+      ? import.meta.env[viteKey]
+      : undefined;
+  const craValue =
+    typeof process !== 'undefined' && process.env ? process.env[craKey] : undefined;
+  return viteValue ?? craValue ?? undefined;
 };
 
-/**
- * Parse JSON response with better error handling
- */
+const normalizeUrl = (value) => {
+  if (!value || typeof value !== 'string') return undefined;
+  return value.endsWith('/') ? value.slice(0, -1) : value;
+};
+
+const API_BASE_URL =
+  normalizeUrl(
+    readEnv('VITE_API_BASE_URL', 'REACT_APP_API_BASE_URL'),
+  ) || 'http://localhost:8000';
+
+const USE_MOCK_DATA =
+  (readEnv('VITE_USE_MOCK_DATA', 'REACT_APP_USE_MOCK_DATA') || 'false').toString().toLowerCase() ===
+  'true';
+
+const OMDB_API_KEY = readEnv('VITE_OMDB_API_KEY', 'REACT_APP_OMDB_API_KEY');
+const DEFAULT_OMDB_KEY = 'trilogy'; // public demo key from OMDb docs
+
+const cache = new Map();
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const handleFetchError = (error, defaultMessage) => {
+  if (error?.name === 'TypeError' && error.message.includes('fetch')) {
+    return new Error('Unable to reach the recommendation API. Please ensure the backend is running.');
+  }
+  if (error?.message) {
+    return new Error(error.message);
+  }
+  return new Error(defaultMessage || 'An unexpected error occurred.');
+};
+
 const parseJSONResponse = async (response) => {
   const text = await response.text();
-  
-  // Check if response is HTML (common when server returns error page)
   if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
-    throw new Error('Server returned HTML instead of JSON. The API endpoint may be incorrect or the server is not running.');
+    throw new Error('Server returned HTML instead of JSON. Check your API base URL.');
   }
-  
   try {
     return JSON.parse(text);
-  } catch (parseError) {
-    throw new Error(`Invalid JSON response from server: ${text.substring(0, 100)}...`);
-  }
-};
-
-/**
- * Search for a movie by name
- * @param {string} query - Movie name to search for
- * @returns {Promise<Object>} Movie data
- */
-export const searchMovie = async (query) => {
-  // Use mock data if enabled
-  if (USE_MOCK_DATA) {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const mockMovie = searchMockMovie(query);
-    console.log('Using mock data for search:', query);
-    return mockMovie;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/movies/search?q=${encodeURIComponent(query)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      
-      // Check if response is HTML
-      if (errorText.trim().startsWith('<!DOCTYPE') || errorText.trim().startsWith('<html')) {
-        // Fallback to mock data instead of throwing error
-        console.warn('Server returned HTML, falling back to mock data');
-        await new Promise(resolve => setTimeout(resolve, 300));
-        return searchMockMovie(query);
-      }
-      
-      // For other errors, try to parse and fallback
-      let errorMessage = `Failed to search movie: ${response.statusText}`;
-      try {
-        const errorData = JSON.parse(errorText);
-        errorMessage = errorData.message || errorMessage;
-      } catch (e) {
-        // If response is not JSON, fallback to mock data
-        console.warn('Invalid response format, falling back to mock data');
-        await new Promise(resolve => setTimeout(resolve, 300));
-        return searchMockMovie(query);
-      }
-      
-      // If we have a valid error message, still fallback to mock data
-      console.warn('API error, falling back to mock data:', errorMessage);
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return searchMockMovie(query);
-    }
-
-    try {
-      const data = await parseJSONResponse(response);
-      return data;
-    } catch (parseError) {
-      // If JSON parsing fails, fallback to mock data
-      console.warn('Failed to parse JSON response, falling back to mock data:', parseError);
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return searchMockMovie(query);
-    }
   } catch (error) {
-    console.warn('Error searching movie, falling back to mock data:', error);
-    // Always fallback to mock data on any error
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return searchMockMovie(query);
+    throw new Error(`Failed to parse server response: ${text.substring(0, 120)}...`);
   }
 };
 
-/**
- * Get movie details by ID
- * @param {string|number} movieId - Movie ID
- * @returns {Promise<Object>} Movie details
- */
-export const getMovieDetails = async (movieId) => {
-  // Use mock data if enabled
+const apiRequest = async (path, options = {}) => {
+  const url = `${API_BASE_URL}${path}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    ...options,
+  });
+
+  if (!response.ok) {
+    const errorPayload = await response.text();
+    let message = `Request failed: ${response.statusText}`;
+    try {
+      const parsed = JSON.parse(errorPayload);
+      message = parsed.detail || parsed.message || message;
+    } catch {
+      if (errorPayload && errorPayload.length < 200) {
+        message = errorPayload;
+      }
+    }
+    throw new Error(message);
+  }
+
+  return parseJSONResponse(response);
+};
+
+const buildImdbUrl = (imdbId) =>
+  imdbId ? `https://www.imdb.com/title/${encodeURIComponent(imdbId)}/` : null;
+
+const buildPosterUrl = (movie, imdbId) => {
+  if (!movie) return null;
+  if (movie.poster_url || movie.posterUrl) return movie.poster_url || movie.posterUrl;
+  if (movie.poster && movie.poster !== 'N/A') return movie.poster;
+  if (movie.poster_path) return movie.poster_path;
+  return null;
+};
+
+const buildOmdbImageUrl = (imdbId) => {
+  if (!imdbId) return null;
+  const key = OMDB_API_KEY || DEFAULT_OMDB_KEY;
+  if (!key) return null;
+  return `https://img.omdbapi.com/?apikey=${key}&i=${encodeURIComponent(imdbId)}`;
+};
+
+const ensurePoster = async (movie) => {
+  if (!movie) return null;
+  if ((movie.poster && movie.poster !== 'N/A') || !movie.imdbId) {
+    return movie;
+  }
+  const posterUrl = buildOmdbImageUrl(movie.imdbId);
+  if (posterUrl) {
+    return { ...movie, poster: posterUrl };
+  }
+  return movie;
+};
+
+const mapApiMovie = (movie = {}) => {
+  if (!movie) return null;
+  const imdbId =
+    movie.imdb_id || movie.imdbId || movie.id || movie.imdbID || null;
+
+  return {
+    id: imdbId || movie.title,
+    imdbId,
+    title: movie.title || movie.name || 'Unknown title',
+    year: movie.year ?? null,
+    runtime: movie.runtime ?? null,
+    rating: movie.rating ?? null,
+    votes: movie.votes ?? null,
+    overview: movie.plot || movie.overview || movie.description || '',
+    genres: movie.genres || movie.genre || [],
+    directors: movie.directors || (movie.director ? [movie.director] : []),
+    cast: movie.actors || movie.cast || [],
+    keywords: movie.keywords || [],
+    imdbUrl: movie.imdb_url || buildImdbUrl(imdbId),
+    poster: buildPosterUrl(movie, imdbId),
+  };
+};
+
+const selectBestMatch = (movies, query) => {
+  if (!Array.isArray(movies) || movies.length === 0) return null;
+  if (!query) return movies[0];
+
+  const lowerQuery = query.trim().toLowerCase();
+  return (
+    movies.find((movie) => movie.title?.toLowerCase() === lowerQuery) ||
+    movies[0]
+  );
+};
+
+const searchMoviesRaw = async (keyword) => {
+  const params = new URLSearchParams({ keyword });
+  return apiRequest(`/movies/search/?${params.toString()}`);
+};
+
+const fetchMovieByTitle = async (title) => {
+  if (!title) return null;
+  const cacheKey = `title:${title.toLowerCase()}`;
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
+  try {
+    const results = await searchMoviesRaw(title);
+    const match = selectBestMatch(results, title);
+    const mapped = mapApiMovie(match);
+    if (!mapped) {
+      return null;
+    }
+    const enriched = await ensurePoster(mapped);
+    cache.set(cacheKey, enriched);
+    return enriched;
+  } catch (error) {
+    console.warn(`Failed to fetch movie by title "${title}":`, error);
+    return null;
+  }
+};
+
+export const fetchPopularMovies = async () => {
   if (USE_MOCK_DATA) {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const mockMovie = getMockMovieById(movieId);
-    console.log('Using mock data for movie details:', movieId);
-    return mockMovie;
+    await delay(400);
+    const mappedMocks = Object.values(mockMovies).map(mapApiMovie);
+    return Promise.all(mappedMocks.map(ensurePoster));
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/movies/${movieId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const data = await apiRequest('/movies/');
+    const mapped = Array.isArray(data) ? data.map(mapApiMovie) : [];
+    return Promise.all(mapped.map(ensurePoster));
+  } catch (error) {
+    console.warn('Failed to load popular movies, falling back to mock data.', error);
+    const mappedMocks = Object.values(mockMovies).map(mapApiMovie);
+    return Promise.all(mappedMocks.map(ensurePoster));
+  }
+};
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      let errorMessage = `Failed to get movie details: ${response.statusText}`;
-      
-      // Check if response is HTML
-      if (errorText.trim().startsWith('<!DOCTYPE') || errorText.trim().startsWith('<html')) {
-        throw new Error(`Server returned HTML (status ${response.status}). The API endpoint may be incorrect. Check your API URL: ${API_BASE_URL}`);
-      }
-      
-      try {
-        const errorData = JSON.parse(errorText);
-        errorMessage = errorData.message || errorMessage;
-      } catch (e) {
-        if (errorText && errorText.length < 200) {
-          errorMessage = errorText;
+export const searchMovie = async (query) => {
+  if (!query?.trim()) return null;
+
+  if (USE_MOCK_DATA) {
+    await delay(300);
+    return ensurePoster(mapApiMovie(searchMockMovie(query)));
+  }
+
+  try {
+    const results = await searchMoviesRaw(query);
+    const match = selectBestMatch(results, query);
+    const mapped = mapApiMovie(match);
+    if (!mapped) {
+      return null;
+    }
+    return ensurePoster(mapped);
+  } catch (error) {
+    console.warn('Search failed, using mock data.', error);
+    await delay(300);
+    return ensurePoster(mapApiMovie(searchMockMovie(query)));
+  }
+};
+
+export const getMovieDetails = async (imdbId) => {
+  if (!imdbId) return null;
+
+  if (USE_MOCK_DATA) {
+    await delay(300);
+    return ensurePoster(mapApiMovie(getMockMovieById(imdbId)));
+  }
+
+  try {
+    const data = await apiRequest(`/movies/id/${encodeURIComponent(imdbId)}`);
+    return ensurePoster(mapApiMovie(data));
+  } catch (error) {
+    console.error('Error fetching movie details, falling back to mock data.', error);
+    await delay(300);
+    return ensurePoster(mapApiMovie(getMockMovieById(imdbId)));
+  }
+};
+
+const fetchActorRecommendations = async (movieTitle) => {
+  const params = new URLSearchParams({ movie_name: movieTitle });
+  const data = await apiRequest(`/MoviesRecommendByActor?${params.toString()}`);
+  return data?.recommendations ?? [];
+};
+
+const fetchGenreRecommendations = async (movieTitle) => {
+  const params = new URLSearchParams({ movie_name: movieTitle });
+  const data = await apiRequest(`/MoviesRecommendByGenre?${params.toString()}`);
+  return data?.recommendations ?? [];
+};
+
+const fetchContentRecommendations = async (movieTitle, topN = 8) => {
+  const params = new URLSearchParams({
+    movie_title: movieTitle,
+    top_n: topN.toString(),
+  });
+  const data = await apiRequest(`/recommend/content-based?${params.toString()}`);
+  return data?.recommendations ?? [];
+};
+
+const hydrateRecommendations = async (items = []) => {
+  const limited = items.slice(0, 10);
+  const hydrated = await Promise.all(
+    limited.map(async (item) => {
+      const imdbId = item.imdb_id || item.imdbId || item.id || null;
+
+      if (imdbId) {
+        try {
+          const detailedById = await getMovieDetails(imdbId);
+          if (detailedById) {
+            return detailedById;
+          }
+        } catch (error) {
+          console.warn(`Failed to fetch movie by IMDb ID "${imdbId}"`, error);
         }
       }
-      throw new Error(errorMessage);
-    }
 
-    const data = await parseJSONResponse(response);
-    return data;
-  } catch (error) {
-    console.error('Error getting movie details:', error);
-    // Fallback to mock data on error if not already using it
-    if (!USE_MOCK_DATA) {
-      console.warn('API request failed, falling back to mock data');
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return getMockMovieById(movieId);
-    }
-    throw handleFetchError(error, 'Failed to load movie details. Please try again.');
-  }
+      if (item.title) {
+        try {
+          const detailedByTitle = await fetchMovieByTitle(item.title);
+          if (detailedByTitle) {
+            return detailedByTitle;
+          }
+        } catch (error) {
+          console.warn(`Failed to fetch movie by title "${item.title}"`, error);
+        }
+      }
+
+      return ensurePoster({
+        id: imdbId || item.title,
+        imdbId,
+        title: item.title || 'Unknown title',
+        year: item.year ?? null,
+        rating: item.rating ?? null,
+        overview: '',
+        genres: [],
+        directors: [],
+        cast: [],
+        keywords: [],
+        imdbUrl: imdbId ? buildImdbUrl(imdbId) : null,
+        poster: null,
+      });
+    }),
+  );
+
+  return hydrated.filter(Boolean);
 };
 
-/**
- * Get movie recommendations
- * @param {string|number} movieId - Movie ID
- * @returns {Promise<Object>} Recommendations object with byActors, byGenre, and byContent arrays
- */
-export const getRecommendations = async (movieId) => {
-  // Use mock data if enabled
+export const getRecommendations = async (imdbId, movieTitle) => {
   if (USE_MOCK_DATA) {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 400));
-    const mockRecs = getMockRecommendations(movieId);
-    console.log('Using mock data for recommendations:', movieId);
-    return mockRecs;
+    await delay(300);
+    return getMockRecommendations(imdbId);
+  }
+
+  if (!movieTitle) {
+    const details = await getMovieDetails(imdbId);
+    movieTitle = details?.title;
+  }
+
+  if (!movieTitle) {
+    return { byActors: [], byGenre: [], byContent: [] };
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/movies/${movieId}/recommendations`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const [actorRaw, genreRaw, contentRaw] = await Promise.all([
+      fetchActorRecommendations(movieTitle).catch((err) => {
+        console.warn('Actor recommendations failed', err);
+        return [];
+      }),
+      fetchGenreRecommendations(movieTitle).catch((err) => {
+        console.warn('Genre recommendations failed', err);
+        return [];
+      }),
+      fetchContentRecommendations(movieTitle).catch((err) => {
+        console.warn('Content recommendations failed', err);
+        return [];
+      }),
+    ]);
 
-    if (!response.ok) {
-      // Don't throw error for recommendations - just return empty arrays
-      // This allows the movie to still display even if recommendations fail
-      const errorText = await response.text();
-      if (errorText.trim().startsWith('<!DOCTYPE') || errorText.trim().startsWith('<html')) {
-        console.warn('Server returned HTML for recommendations. API endpoint may be incorrect. Falling back to mock data.');
-        // Fallback to mock data
-        return getMockRecommendations(movieId);
-      } else {
-        console.warn('Failed to get recommendations:', response.statusText);
-      }
-      // Fallback to mock data on error
-      return getMockRecommendations(movieId);
-    }
+    const [byActors, byGenre, byContent] = await Promise.all([
+      hydrateRecommendations(actorRaw),
+      hydrateRecommendations(genreRaw),
+      hydrateRecommendations(contentRaw),
+    ]);
 
-    const data = await parseJSONResponse(response);
-    return {
-      byActors: data.byActors || [],
-      byGenre: data.byGenre || [],
-      byContent: data.byContent || [],
-    };
+    return { byActors, byGenre, byContent };
   } catch (error) {
-    // Don't throw error for recommendations - just return mock data
-    console.warn('Error getting recommendations, using mock data:', error);
-    return getMockRecommendations(movieId);
+    console.error('Failed to fetch recommendations, using mock data.', error);
+    return getMockRecommendations(imdbId);
   }
 };
 
