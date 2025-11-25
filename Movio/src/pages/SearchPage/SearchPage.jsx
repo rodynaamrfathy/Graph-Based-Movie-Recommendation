@@ -4,21 +4,28 @@ import SearchBar from '../../components/SearchBar/SearchBar.jsx';
 import SearchedMovie from '../../components/SearchedMovie/SearchedMovie.jsx';
 import RecommendationSection from '../../components/RecommendationSection/RecommendationSection.jsx';
 import HelpIcon from '../../components/HelpIcon/HelpIcon.jsx';
-import { searchMovie } from '../../services/movieService';
-import { mockMovies } from '../../services/mockData';
+import { searchMovie, getAllMovies } from '../../services/movieService';
 import './SearchPage.css';
 
 const SearchPage = () => {
   const [searchedMovie, setSearchedMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [popularMovies, setPopularMovies] = useState([]);
+  const [allMovies, setAllMovies] = useState([]);
 
-  // Load popular movies on component mount
+  // Load all movies on component mount
   useEffect(() => {
-    // Get all mock movies as popular movies
-    const movies = Object.values(mockMovies);
-    setPopularMovies(movies);
+    const loadAllMovies = async () => {
+      try {
+        const movies = await getAllMovies();
+        setAllMovies(movies);
+      } catch (err) {
+        console.error('Failed to load movies:', err);
+        // Set empty array on error
+        setAllMovies([]);
+      }
+    };
+    loadAllMovies();
   }, []);
 
   const handleSearch = async (query) => {
@@ -27,7 +34,6 @@ const SearchPage = () => {
     setSearchedMovie(null);
 
     try {
-      // Search for the movie (always returns mock data if API fails)
       const movieData = await searchMovie(query);
       
       if (movieData) {
@@ -37,9 +43,8 @@ const SearchPage = () => {
         setError('Movie not found. Please try another search.');
       }
     } catch (err) {
-      // This should rarely happen now since searchMovie always falls back to mock data
-      console.error('Unexpected search error:', err);
-      setError('An unexpected error occurred. Please try again.');
+      console.error('Search error:', err);
+      setError(err.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -57,11 +62,11 @@ const SearchPage = () => {
           </div>
         )}
 
-        {!searchedMovie && !isLoading && !error && popularMovies.length > 0 && (
+        {!searchedMovie && !isLoading && !error && allMovies.length > 0 && (
           <RecommendationSection
-            title="Popular Movies"
-            subtitle="Discover trending movies"
-            movies={popularMovies}
+            title="All Movies"
+            subtitle="Browse our complete movie collection"
+            movies={allMovies}
           />
         )}
 

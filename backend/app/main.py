@@ -22,7 +22,7 @@ app = FastAPI(
 FRONTEND = os.getenv("FRONTEND_URL", "http://localhost:3000")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND, "http://localhost:3000"],
+    allow_origins=[FRONTEND, "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -131,55 +131,98 @@ def view_movie_on_imdb(imdb_id: str):
     imdb_url = f"https://www.imdb.com/title/{urllib.parse.quote(imdb_id)}/"
     return {"imdb_id": imdb_id, "imdb_url": imdb_url}
 
-# search movie by keyword
-@app.get("/movies/search/", summary="Search Movies by Keyword", response_description="List of Movies")
-def search_movies_by_keyword(keyword: str = Query(..., description="Keyword to search for")):
-    query = """
+# search movie by keyword or title
+@app.get("/movies/search/", summary="Search Movies by Keyword or Title", response_description="List of Movies")
+def search_movies_by_keyword(keyword: str = Query(..., description="Keyword or movie title to search for")):
+    # First, find movies by title
+    query_by_title = """
+    MATCH (m:Movie)
+    WHERE toLower(m.title) CONTAINS toLower($keyword)
+    RETURN DISTINCT m.imdb_id AS imdb_id
+    """
+    
+    # Then, find movies by keyword
+    query_by_keyword = """
     MATCH (m:Movie)-[:HAS_KEYWORD]->(k:Keyword)
     WHERE toLower(k.name) CONTAINS toLower($keyword)
-    OPTIONAL MATCH (m)<-[:ACTED_IN]-(a:Actor)
-    OPTIONAL MATCH (m)<-[:DIRECTED]-(d:Director)
-    OPTIONAL MATCH (m)-[:BELONGS_TO_MOVIE]->(g:Genre)
-    OPTIONAL MATCH (m)-[:HAS_KEYWORD]->(kw:Keyword)
-    RETURN m,
-           collect(DISTINCT a.name) AS actors,
-           collect(DISTINCT d.name) AS directors,
-           collect(DISTINCT g.name) AS genres,
-           collect(DISTINCT kw.name) AS keywords
-    LIMIT 20
+    RETURN DISTINCT m.imdb_id AS imdb_id
     """
+    
+    # Combine results and get full movie details
     movies = []
+    imdb_ids = set()
+    
     with driver.session() as session:
-        result = session.run(query, keyword=keyword)
-        for record in result:
-            m = record["m"]
-            movies.append({
-                "imdb_id": m.get("imdb_id"),
-                "title": m.get("title"),
-                "year": m.get("year"),
-                "runtime": m.get("runtime"),
-                "rating": m.get("rating"),
-                "votes": m.get("votes"),
-                "plot": m.get("plot"),
-                "imdb_url": f"https://www.imdb.com/title/{urllib.parse.quote(m.get('imdb_id'))}/" if m.get("imdb_id") else None,
-                "actors": record["actors"],
-                "directors": record["directors"],
-                "genres": record["genres"],
-                "keywords": record["keywords"]
-            })
+        # Get movies by title
+        result_title = session.run(query_by_title, keyword=keyword)
+        for record in result_title:
+            imdb_id = record["imdb_id"]
+            if imdb_id:
+                imdb_ids.add(imdb_id)
+        
+        # Get movies by keyword
+        result_keyword = session.run(query_by_keyword, keyword=keyword)
+        for record in result_keyword:
+            imdb_id = record["imdb_id"]
+            if imdb_id:
+                imdb_ids.add(imdb_id)
+        
+        # Get full details for all matched movies
+        if imdb_ids:
+            query_full = """
+            MATCH (m:Movie)
+            WHERE m.imdb_id IN $imdb_ids
+            OPTIONAL MATCH (m)<-[:ACTED_IN]-(a:Actor)
+            OPTIONAL MATCH (m)<-[:DIRECTED]-(d:Director)
+            OPTIONAL MATCH (m)-[:BELONGS_TO_MOVIE]->(g:Genre)
+            OPTIONAL MATCH (m)-[:HAS_KEYWORD]->(kw:Keyword)
+            RETURN m,
+                   collect(DISTINCT a.name) AS actors,
+                   collect(DISTINCT d.name) AS directors,
+                   collect(DISTINCT g.name) AS genres,
+                   collect(DISTINCT kw.name) AS keywords
+            ORDER BY 
+                CASE 
+                    WHEN toLower(m.title) = toLower($keyword) THEN 1
+                    WHEN toLower(m.title) STARTS WITH toLower($keyword) THEN 2
+                    WHEN toLower(m.title) CONTAINS toLower($keyword) THEN 3
+                    ELSE 4
+                END,
+                m.rating DESC
+            LIMIT 20
+            """
+            result_full = session.run(query_full, imdb_ids=list(imdb_ids), keyword=keyword)
+            for record in result_full:
+                m = record["m"]
+                movies.append({
+                    "imdb_id": m.get("imdb_id"),
+                    "title": m.get("title"),
+                    "year": m.get("year"),
+                    "runtime": m.get("runtime"),
+                    "rating": m.get("rating"),
+                    "votes": m.get("votes"),
+                    "plot": m.get("plot"),
+                    "imdb_url": f"https://www.imdb.com/title/{urllib.parse.quote(m.get('imdb_id'))}/" if m.get("imdb_id") else None,
+                    "actors": record["actors"],
+                    "directors": record["directors"],
+                    "genres": record["genres"],
+                    "keywords": record["keywords"]
+                })
+    
     if movies:
         return movies
     else:
-        return {"error": "No movies found for this keyword"}
+        return {"error": "No movies found for this search"}
 
 # recommend by actor
-@app.get("/MoviesRecommendByActor", summary="Movie Recommendation based on Actors", response_description="Movie Recommendations")
+@app.post("/MoviesRecommendByActor", summary="Movie Recommendation based on Actors", response_description="Movie Recommendations")
 def movie_recommend_by_actor(movie_name: str = Form(...)):
     query = """
     MATCH (m:Movie {title: $movie_title})<-[:ACTED_IN]-(a:Actor)-[:ACTED_IN]->(rec:Movie)
     WHERE m <> rec
     WITH rec, COUNT(a) AS shared_actors
-    RETURN rec.title AS RecommendedMovie,
+    RETURN rec.imdb_id AS imdb_id,
+           rec.title AS RecommendedMovie,
            rec.rating AS Rating,
            rec.year AS Year,
            shared_actors
@@ -191,6 +234,7 @@ def movie_recommend_by_actor(movie_name: str = Form(...)):
         recommendations = []
         for record in result:
             recommendations.append({
+                "imdb_id": record["imdb_id"],
                 "title": record["RecommendedMovie"],
                 "rating": record["Rating"],
                 "year": record["Year"],
@@ -203,13 +247,14 @@ def movie_recommend_by_actor(movie_name: str = Form(...)):
         return {"error": "No recommendations found for this movie"}
 
 # recommend by genre
-@app.get("/MoviesRecommendByGenre", summary="Movie Recommendation based on Genre", response_description="Movie Recommendations")
+@app.post("/MoviesRecommendByGenre", summary="Movie Recommendation based on Genre", response_description="Movie Recommendations")
 def movie_recommend_by_genre(movie_name: str = Form(...)):
     query = """
     MATCH (m:Movie {title: $movie_title})-[:BELONGS_TO_MOVIE]->(g:Genre)<-[:BELONGS_TO_MOVIE]-(rec:Movie)
     WHERE m <> rec
     WITH rec, COUNT(g) AS shared_genres
-    RETURN rec.title AS RecommendedMovie,
+    RETURN rec.imdb_id AS imdb_id,
+           rec.title AS RecommendedMovie,
            rec.rating AS Rating,
            rec.year AS Year,
            shared_genres
@@ -221,6 +266,7 @@ def movie_recommend_by_genre(movie_name: str = Form(...)):
         recommendations = []
         for record in result:
             recommendations.append({
+                "imdb_id": record["imdb_id"],
                 "title": record["RecommendedMovie"],
                 "rating": record["Rating"],
                 "year": record["Year"],

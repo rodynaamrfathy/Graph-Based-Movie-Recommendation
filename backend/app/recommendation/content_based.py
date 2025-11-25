@@ -50,8 +50,8 @@ def fetch_movies(driver) -> pd.DataFrame:
             return df
 
     plots_df = run_query(
-        "MATCH (m:Movie) RETURN m.imdb_id AS imdb_id, m.title AS title, m.plot AS plot",
-        ["imdb_id", "title", "plot"]
+        "MATCH (m:Movie) RETURN m.imdb_id AS imdb_id, m.title AS title, m.plot AS plot, m.rating AS rating, m.year AS year",
+        ["imdb_id", "title", "plot", "rating", "year"]
     )
 
     genres_df = run_query(
@@ -136,7 +136,13 @@ def get_content_recommendations(movie_title: str, driver, top_n: int = 5):
         movies_df[movies_df.index != idx]
         .sort_values(by="overall_similarity", ascending=False)
         .head(top_n)
-        [["title", "overall_similarity"]]
+        [["imdb_id", "title", "rating", "year", "overall_similarity"]]
     )
+
+    # Rename columns to match frontend expectations
+    recommendations = recommendations.rename(columns={
+        "rating": "Rating",
+        "year": "Year"
+    })
 
     return recommendations.to_dict(orient="records")

@@ -7,7 +7,9 @@ const SearchedMovie = ({ movie }) => {
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
-    navigate(`/movie/${movie.id}`);
+    // Use imdb_id for navigation
+    const movieId = movie.imdb_id || movie.id;
+    navigate(`/movie/${encodeURIComponent(movieId)}`);
   };
 
   const handleViewIMDb = () => {

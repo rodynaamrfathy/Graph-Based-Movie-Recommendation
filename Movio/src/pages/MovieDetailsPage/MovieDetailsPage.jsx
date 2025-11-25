@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getMovieDetails, getRecommendations } from '../../services/movieService';
+import { getMovieDetails, getRecommendations, searchMovie } from '../../services/movieService';
 import { handleImageError, getPlaceholderPoster } from '../../utils/imageUtils';
 import RecommendationSection from '../../components/RecommendationSection/RecommendationSection.jsx';
 import './MovieDetailsPage.css';
@@ -20,12 +20,31 @@ const MovieDetailsPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const movieData = await getMovieDetails(id);
+        // Decode the id from URL (could be imdb_id or title)
+        const decodedId = decodeURIComponent(id);
+        
+        // Try to get movie details by imdb_id first
+        // If it looks like an imdb_id (starts with 'tt' and has numbers), use getMovieDetails
+        // Otherwise, search by title
+        let movieData;
+        if (decodedId.startsWith('tt') && /^tt\d+$/.test(decodedId)) {
+          // Looks like an imdb_id
+          movieData = await getMovieDetails(decodedId);
+        } else {
+          // Looks like a title, search for it
+          movieData = await searchMovie(decodedId);
+        }
+        
+        if (!movieData) {
+          throw new Error('Movie not found');
+        }
+        
         setMovie(movieData);
         
         // Get recommendations after movie is loaded
-        if (movieData && movieData.id) {
-          const recommendations = await getRecommendations(movieData.id);
+        // Backend recommendations require movie title, not ID
+        if (movieData && movieData.title) {
+          const recommendations = await getRecommendations(movieData.title);
           setActorRecommendations(recommendations.byActors || []);
           setGenreRecommendations(recommendations.byGenre || []);
           setContentRecommendations(recommendations.byContent || []);
